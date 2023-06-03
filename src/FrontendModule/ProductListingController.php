@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Contao CSV Importer.
+ *
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/code4nix/contao-csv-importer
+ */
+
+namespace Code4Nix\ContaoCsvImporter\FrontendModule;
+
+use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
+use Contao\ModuleModel;
+use Contao\Template;
+use Doctrine\DBAL\Connection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+#[AsFrontendModule(category:'miscellaneous', template: 'mod_product_listing')]
+class ProductListingController extends AbstractFrontendModuleController
+{
+    public function __construct(
+        private readonly Connection $connection,
+    ) {
+    }
+
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
+    {
+        $template->products = $this->connection->fetchAllAssociative('SELECT * FROM '.$model->tableSelect.' ORDER BY id');
+
+        return $template->getResponse();
+    }
+}

@@ -1,0 +1,34 @@
+# config/services.yaml
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $projectDir: '%kernel.project_dir%'
+            $importerCollection: '@code4nix.contao_csv_importer.importer.collection'
+            $bundleConfig: '%code4nix_contao_csv_importer.imports%'
+
+    Code4Nix\ContaoCsvImporter\:
+        resource: ../src/
+        exclude: [ ../src/{ DependencyInjection,Event,Model,Session },../src/Importer/Config/Config.php ]
+
+    code4nix.contao_csv_importer.importer.collection:
+        class: Code4Nix\ContaoCsvImporter\Importer\ImporterCollection
+        arguments:
+            - ~
+
+    # Add a session bag
+    code4nix.contao_csv_importer.session.factory:
+        class: Code4Nix\ContaoCsvImporter\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@code4nix.contao_csv_importer.session.factory.inner'
+            - '@code4nix.contao_csv_importer.session.attribute.array_attribute_bag'
+
+    code4nix.contao_csv_importer.session.attribute.array_attribute_bag:
+        class: Code4Nix\ContaoCsvImporter\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - _code4nix_contao_csv_importer_attributes
+        calls:
+            - [ setName, [ code4nix_contao_csv_importer ] ]

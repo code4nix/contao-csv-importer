@@ -1,0 +1,53 @@
+{
+    "name": "code4nix/contao-csv-importer",
+    "description": "Auto import data from spreadsheet to a Contao database table",
+    "keywords": [
+        "contao",
+        "bundle",
+        "tag 3",
+        "tag 4"
+    ],
+    "type": "contao-bundle",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Marko Cupic",
+            "email": "m.cupic@gmx.ch",
+            "homepage": "https://github.com/code4nix",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/code4nix/contao-csv-importer/issues",
+        "source": "https://github.com/code4nix/contao-csv-importer"
+    },
+    "require": {
+        "php": "^8.1",
+        "contao/core-bundle": "^4.13 || ^5.0",
+        "league/csv": "^9.7",
+        "markocupic/contao-twig-assets": "^1.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Code4Nix\\ContaoCsvImporter\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": false,
+            "contao/manager-plugin": false,
+            "contao-community-alliance/composer-plugin": true
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Code4Nix\\ContaoCsvImporter\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
+    },
+    "version": "1.0.0"
+}

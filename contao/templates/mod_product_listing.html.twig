@@ -1,0 +1,56 @@
+{% extends '@Contao/block_searchable' %}
+
+{% block content %}
+    {% do addCssResource('bundles/code4nixcontaocsvimporter/css/style.css') %}
+
+    <form id="filterSearchForm">
+        <input type="text" id="filterSearch" name="search" placeholder="Search..." data-search>
+        <button type="submit">Suche starten</button>
+    </form>
+    <div id="filterContainer">
+    <table>
+
+        <tr>
+            <th>Art.-Nr.</th>
+            <th>Variantencode</th>
+            <th>Weingut</th>
+            <th>Flaschengröße</th>
+            <th>Jahrgang</th>
+            <th>Beschreibung 1</th>
+            <th>Beschreibung 2</th>
+            <th>Ökologisch</th>
+            <th>Preis/Fl. netto</th>
+            <th>Verfügbar</th>
+            <th>Lagerbestand</th>
+            <th>In Auftrag</th>
+            <th>In Bestellung</th>
+            <th>Wareneingang am</th>
+        </tr>
+        {% for product in products %}
+            <tr class="filter-item" style data-category="{{ product.weingut }}">
+                <td data-search>{{ product.art_nr }}</td>
+                <td data-search>{{ product.variantencode }}</td>
+                <td data-search>{{ product.weingut }}</td>
+                <td>{{ product.flaschengroesse }}</td>
+                <td data-search>{{ product.jahrgang }}</td>
+                <td data-search>{{ product.beschreibung_1 }}</td>
+                <td data-search>{{ product.beschreibung_2 }}</td>
+                <td>{{ product.oekologisch }}</td>
+                <td>{{ product.preis_pro_flasche }}</td>
+                <td>{{ product.verfuegbar }}</td>
+                <td>{{ product.lagerbestand }}</td>
+                <td>{{ product.in_auftrag }}</td>
+                <td>{{ product.in_bestellung }}</td>
+                <td>{{ product.wareneingang_am }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <script src="bundles/code4nixcontaocsvimporter/js/filter.js"></script>
+    <script>
+        filterTable('filterContainer', 'filterSearchForm', 'filterSearch', 'filter-item');
+    </script>
+
+
+{% endblock %}
