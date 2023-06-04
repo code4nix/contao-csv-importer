@@ -50,6 +50,11 @@ function filterProductListingTable(containerId, formId, inputBoxId, rowClass) {
         }
     });
 
+    form.querySelector('[type="reset"]').addEventListener('click', e => {
+        document.getElementById('filterSearch').value = '';
+        form.submit();
+    });
+
     form.addEventListener("submit", e => {
 
         (async () => {

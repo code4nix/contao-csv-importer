@@ -32,13 +32,11 @@ class ProductListingController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
-        if(!$request->cookies->has('display_mode'))
-        {
+        if (!$request->cookies->has('display_mode')) {
             $showAll = false;
-        }elseif($request->cookies->get('display_mode') === 'minimize_table')
-        {
+        } elseif ('minimize_table' === $request->cookies->get('display_mode')) {
             $showAll = false;
-        }else{
+        } else {
             $showAll = true;
         }
 
