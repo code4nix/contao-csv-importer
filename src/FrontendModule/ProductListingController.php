@@ -32,6 +32,18 @@ class ProductListingController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response
     {
+        if(!$request->cookies->has('display_mode'))
+        {
+            $showAll = false;
+        }elseif($request->cookies->get('display_mode') === 'minimize_table')
+        {
+            $showAll = false;
+        }else{
+            $showAll = true;
+        }
+
+        $template->display_mode = $showAll ? 'maximize_table' : 'minimize_table';
+
         $template->products = $this->connection->fetchAllAssociative('SELECT * FROM '.$model->tableSelect.' ORDER BY id');
 
         return $template->getResponse();

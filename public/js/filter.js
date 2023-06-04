@@ -1,6 +1,6 @@
 'use strict';
 
-const filterTable = (containerId, formId, inputBoxId, rowClass) => {
+function filterProductListingTable(containerId, formId, inputBoxId, rowClass) {
     // Declare variables
     let body, form, button, input, filter, container, tr, td, i, ii, blnShow, txtValue;
 
@@ -14,6 +14,41 @@ const filterTable = (containerId, formId, inputBoxId, rowClass) => {
 
     // Append overlay
     appendOverlay();
+
+    document.getElementById('btnHideDetails').addEventListener('click', e => {
+        e.target.disabled = true;
+        document.getElementById('btnShowAll').disabled = false;
+
+        // Delete cookie
+        const d = new Date();
+        d.setTime(d.getTime() - 24 * 60 * 60 * 1000);
+        let expires = "expires=" + d.toUTCString();
+        let value = 'minimize_table';
+        document.cookie = 'display_mode' + "=" + value + ";" + expires + ";path=/";
+
+        let elements = document.querySelectorAll('#filterContainer [data-displaymode]'), i;
+        for (i = 0; i < elements.length; ++i) {
+            elements[i].setAttribute('data-displaymode', value);
+        }
+
+    });
+
+    document.getElementById('btnShowAll').addEventListener('click', e => {
+        e.target.disabled = true;
+        document.getElementById('btnHideDetails').disabled = false;
+
+        // Set cookie
+        const d = new Date();
+        d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
+        let expires = "expires=" + d.toUTCString();
+        let value = 'maximize_table';
+        document.cookie = 'display_mode' + "=" + value + ";" + expires + ";path=/";
+
+        let elements = document.querySelectorAll('#filterContainer [data-displaymode]'), i;
+        for (i = 0; i < elements.length; ++i) {
+            elements[i].setAttribute('data-displaymode', value);
+        }
+    });
 
     form.addEventListener("submit", e => {
 
@@ -103,13 +138,7 @@ const filterTable = (containerId, formId, inputBoxId, rowClass) => {
         let overlay = document.createElement('div');
         overlay.id = 'filterSearchOverlay';
 
-        overlay.innerHTML = '<div class="spinner">\n' +
-            '  <div class="rect1"></div>\n' +
-            '  <div class="rect2"></div>\n' +
-            '  <div class="rect3"></div>\n' +
-            '  <div class="rect4"></div>\n' +
-            '  <div class="rect5"></div>\n' +
-            '</div>';
+        overlay.innerHTML = '<div class="spinner">\n' + '  <div class="rect1"></div>\n' + '  <div class="rect2"></div>\n' + '  <div class="rect3"></div>\n' + '  <div class="rect4"></div>\n' + '  <div class="rect5"></div>\n' + '</div>';
 
         document.body.appendChild(overlay);
     }
