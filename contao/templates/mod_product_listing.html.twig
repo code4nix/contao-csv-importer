@@ -1,7 +1,11 @@
 {% extends '@Contao/block_searchable' %}
 
 {% block content %}
-    {% do addCssResource('bundles/code4nixcontaocsvimporter/css/style.css') %}
+    {% set fileMakeTime1 = getFileMakeTime('vendor/code4nix/contao-csv-importer/public/js/filter.js') %}
+    {% do addJavascriptResource('bundles/code4nixcontaocsvimporter/js/filter.js|' ~ fileMakeTime1) %}
+
+    {% set fileMakeTime2 = getFileMakeTime('vendor/code4nix/contao-csv-importer/public/css/style.css') %}
+    {% do addCssResource('bundles/code4nixcontaocsvimporter/css/style.css|' ~ fileMakeTime2) %}
 
     <div>
         <button{% if display_mode == 'minimize_table' %} disabled{% endif %} id="btnHideDetails">Reduzierte Ansicht</button>
@@ -53,7 +57,6 @@
         </table>
     </div>
 
-    <script src="bundles/code4nixcontaocsvimporter/js/filter.js"></script>
     <script>
         filterProductListingTable('filterContainer', 'filterSearchForm', 'filterSearch', 'filter-item');
     </script>

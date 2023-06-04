@@ -4,8 +4,9 @@
     "keywords": [
         "contao",
         "bundle",
-        "tag 3",
-        "tag 4"
+        "Leif Braun",
+        "kda",
+        "import script"
     ],
     "type": "contao-bundle",
     "license": "GPL-3.0-or-later",
