@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['product_listing'] = '
-    {type_legend},type;
+    {title_legend},name,headline,type;
     {config_legend},tableSelect;
     {protected_legend:hide},protected;
     {expert_legend:hide},cssID

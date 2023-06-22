@@ -19,6 +19,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\ModuleModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,6 +28,7 @@ class ProductListingController extends AbstractFrontendModuleController
 {
     public function __construct(
         private readonly Connection $connection,
+        private readonly Packages $packages,
     ) {
     }
 
