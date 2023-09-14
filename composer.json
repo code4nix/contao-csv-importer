@@ -25,6 +25,8 @@
     "require": {
         "php": "^8.1",
         "contao/core-bundle": "^4.13 || ^5.0",
+        "symfony/finder": "*",
+        "symfony/filesystem": "*",
         "league/csv": "^9.7",
         "markocupic/contao-twig-assets": "^1.0"
     },

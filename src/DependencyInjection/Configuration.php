@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('importer')->defaultValue(GenericImporter::NAME)->end()
-                            ->scalarNode('source_file_path')->isRequired()->end()
+                            ->scalarNode('source_file_path')->info('Add a relative file or folder path.')->isRequired()->end()
                             ->enumNode('file_encoding')->values(['ASCII', 'UTF-8', 'ISO-8859-1'])->defaultValue('UTF-8')->end()
                             ->enumNode('output_encoding')->values(['ASCII', 'UTF-8', 'ISO-8859-1'])->defaultValue('UTF-8')->end()
                             ->scalarNode('delimiter')->defaultValue(';')->end()

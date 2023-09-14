@@ -26,6 +26,8 @@ use League\Csv\UnavailableStream;
 use Safe\Exceptions\IconvException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Finder\Finder;
 use function Safe\iconv;
 
 abstract class AbstractImporter implements ImporterInterface
@@ -100,11 +102,25 @@ abstract class AbstractImporter implements ImporterInterface
 
     public function getSourceFilePath($blnAbsolute = false): string
     {
-        if ($blnAbsolute) {
-            return $this->projectDir.'/'.$this->config->getSourceFilePath();
+        $path = $this->projectDir.'/'.$this->config->getSourceFilePath();
+
+        if (is_file($path)) {
+            $strSrc = $path;
+        } elseif (is_dir($path)) {
+            $strSrc = $this->getSourcePathFromFolderPath($path);
+        } else {
+            $strSrc = null;
         }
 
-        return $this->config->getSourceFilePath();
+        if (empty($strSrc)) {
+            throw new \Exception(sprintf('Could not find import file in "%s".', $path));
+        }
+
+        if ($blnAbsolute) {
+            return $strSrc;
+        }
+
+        return Path::makeRelative($strSrc, $this->projectDir);
     }
 
     public function setRecords(array $records): void
@@ -123,7 +139,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @throws UnavailableStream
      * @throws \League\Csv\Exception
      */
-    private function loadRecordsFromFile(): void
+    protected function loadRecordsFromFile(): void
     {
         $content = file_get_contents($this->getSourceFilePath(true));
 
@@ -160,7 +176,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->setRecords($records);
     }
 
-    private function createTempFile(string $content): string
+    protected function createTempFile(string $content): string
     {
         $tempFile = sys_get_temp_dir().\DIRECTORY_SEPARATOR.uniqid('csv_import_').'.csv';
 
@@ -168,5 +184,37 @@ abstract class AbstractImporter implements ImporterInterface
         $fs->appendToFile($tempFile, $content);
 
         return $tempFile;
+    }
+
+    protected function getSourcePathFromFolderPath(string $folderPath): string|null
+    {
+        if (!is_dir($folderPath)) {
+            throw new \Exception(sprintf('Path "%s" seems not to be a directory.', $folderPath));
+        }
+
+        $finder = new Finder();
+        $finder
+            ->files()
+            ->in($folderPath)
+            ->name('*.csv')
+            ->ignoreDotFiles(true)
+            ->depth('== 0')
+            ->sortByName()
+            ->reverseSorting()
+        ;
+
+        // check if there are any search results
+        if (!$finder->hasResults()) {
+            return null;
+        }
+
+        $src = null;
+
+        foreach ($finder as $file) {
+            $src = $file->getRealPath();
+            break;
+        }
+
+        return $src;
     }
 }
