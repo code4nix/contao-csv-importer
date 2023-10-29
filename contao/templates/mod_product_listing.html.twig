@@ -46,7 +46,7 @@
                     <td data-search>{{ product.beschreibung_1 }}</td>
                     <td data-displaymode="{{ display_mode }}" data-search>{{ product.beschreibung_2 }}</td>
                     <td>{{ product.oekologisch }}</td>
-                    <td>{{ product.preis_pro_flasche }}</td>
+                    <td>{{ product.preis_pro_flasche|number_format(2, ',', "'") }} €</td>
                     <td>{{ product.verfuegbar }}</td>
                     <td data-displaymode="{{ display_mode }}">{{ product.lagerbestand }}</td>
                     <td data-displaymode="{{ display_mode }}">{{ product.in_auftrag }}</td>
