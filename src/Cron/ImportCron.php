@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao CSV Importer.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -21,6 +21,7 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Path;
 
 #[AsCronJob('*/30 * * * *')]
 #[AsCronJob('hourly')]
@@ -51,7 +52,8 @@ class ImportCron
         $importer->import();
 
         $message = sprintf(
-            'Successfully imported the inventory sheet and found %d items.',
+            'Successfully imported file "%s". Data records: %d',
+            $importer->getSourceFilePath(),
             KdaProductModel::countAll(),
         );
 

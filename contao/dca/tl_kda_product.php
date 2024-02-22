@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao CSV Importer.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -22,7 +22,7 @@ $columns = [];
 if (System::getContainer()->hasParameter('code4nix_contao_csv_importer.imports')) {
     $imports = System::getContainer()->getParameter('code4nix_contao_csv_importer.imports')['kda_product']['columns'];
     if (isset($imports['kda_product']['columns'])) {
-        $columns = array_keys($imports['kda_product']['columns']); 
+        $columns = array_keys($imports['kda_product']['columns']);
     }
 }
 
