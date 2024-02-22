@@ -27,7 +27,7 @@ use Symfony\Component\Filesystem\Path;
 #[AsCronJob('hourly')]
 class ImportCron
 {
-    private const LOG_TYPE = 'IMPORT_PRODUCT_INVENTORY';
+    public const LOG_TYPE = 'IMPORT_PRODUCT_INVENTORY';
 
     public function __construct(
         private readonly ImporterFactory $importerFactory,

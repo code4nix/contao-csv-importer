@@ -14,11 +14,13 @@ declare(strict_types=1);
 
 namespace Code4Nix\ContaoCsvImporter\FrontendModule;
 
+use Code4Nix\ContaoCsvImporter\Cron\ImportCron;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\ModuleModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,6 +45,12 @@ class ProductListingController extends AbstractFrontendModuleController
         }
 
         $template->display_mode = $showAll ? 'maximize_table' : 'minimize_table';
+
+        $template->lastImportTstamp = $this->connection->fetchOne(
+            'SELECT tstamp FROM tl_log WHERE action = :action ORDER BY tstamp DESC',
+            ['action' => ImportCron::LOG_TYPE],
+            ['action' => Types::STRING],
+        );
 
         $template->products = $this->connection->fetchAllAssociative('SELECT * FROM '.$model->tableSelect.' ORDER BY id');
 

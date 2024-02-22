@@ -17,7 +17,7 @@
         <button id="filterSearchSubmitBtn" type="submit">Suche starten</button>
         <button id="filterSearchResetBtn" type="reset">Zurücksetzen</button>
     </form>
-
+    <p>Last update: {{ lastImportTstamp|default(0)|date("Y-m-d H:i") }}</p>
     <div id="filterContainer">
         <table>
             <tr>
