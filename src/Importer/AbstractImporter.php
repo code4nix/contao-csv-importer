@@ -16,6 +16,7 @@ namespace Code4Nix\ContaoCsvImporter\Importer;
 
 use Code4Nix\ContaoCsvImporter\Event\AfterImportEvent;
 use Code4Nix\ContaoCsvImporter\Event\BeforeImportEvent;
+use Code4Nix\ContaoCsvImporter\Event\BeforeInsertRowEvent;
 use Code4Nix\ContaoCsvImporter\Importer\Config\Config;
 use Code4Nix\ContaoCsvImporter\Importer\Exception\ColumnNotFoundInCsvHeaderException;
 use Doctrine\DBAL\Connection;
@@ -34,6 +35,7 @@ abstract class AbstractImporter implements ImporterInterface
 {
     private Config|null $config = null;
     private array $records = [];
+    private array $currentRecord = [];
 
     public function __construct(
         private readonly Connection $connection,
@@ -71,20 +73,27 @@ abstract class AbstractImporter implements ImporterInterface
     {
         $this->loadRecordsFromFile();
 
+        // Truncate table before insert
+        if ('truncate' === $this->config->getInsertMode()) {
+            /** @noinspection SqlResolve */
+            $this->connection->executeStatement('TRUNCATE TABLE '.$this->config->getTargetTable());
+            $this->connection->executeStatement('ALTER TABLE '.$this->config->getTargetTable().' AUTO_INCREMENT = 1');
+        }
+
+        // Dispatch before.import event
         $this->eventDispatcher->dispatch(new BeforeImportEvent($this), BeforeImportEvent::NAME);
 
         $this->connection->beginTransaction();
         $insertIds = [];
+        $this->eventDispatcher->dispatch(new BeforeInsertRowEvent($this), BeforeInsertRowEvent::NAME);
 
         try {
-            // Truncate table before insert
-            if ('truncate' === $this->config->getInsertMode()) {
-                /** @noinspection SqlResolve */
-                $this->connection->executeStatement('DELETE FROM '.$this->config->getTargetTable().' WHERE id > 0');
-            }
-
             foreach ($this->getRecords() as $row) {
-                $this->connection->insert($this->config->getTargetTable(), $row);
+                $this->setCurrentRecord($row);
+                // Dispatch before_insert_row.event
+                $this->eventDispatcher->dispatch(new BeforeInsertRowEvent($this), BeforeInsertRowEvent::NAME);
+
+                $this->connection->insert($this->config->getTargetTable(), $this->getCurrentRecord());
                 $insertIds[] = $this->connection->lastInsertId();
             }
 
@@ -97,6 +106,7 @@ abstract class AbstractImporter implements ImporterInterface
             throw $e;
         }
 
+        // Dispatch after.import event
         $this->eventDispatcher->dispatch(new AfterImportEvent($this, $insertIds), AfterImportEvent::NAME);
     }
 
@@ -121,6 +131,16 @@ abstract class AbstractImporter implements ImporterInterface
         }
 
         return Path::makeRelative($strSrc, $this->projectDir);
+    }
+
+    public function getCurrentRecord(): array
+    {
+        return $this->currentRecord;
+    }
+
+    public function setCurrentRecord(array $record): void
+    {
+        $this->currentRecord = $record;
     }
 
     public function setRecords(array $records): void
@@ -166,6 +186,11 @@ abstract class AbstractImporter implements ImporterInterface
                     }
                 }
                 $set[$key_contao] = $record[$key_csv];
+            }
+
+            // Do not insert empty records
+            if(implode('', $set) === (string) $set['tstamp']){
+                continue;
             }
 
             ++$i;

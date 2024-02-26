@@ -20,7 +20,7 @@ $columns = [];
 
 // Get columns from configuration
 if (System::getContainer()->hasParameter('code4nix_contao_csv_importer.imports')) {
-    $imports = System::getContainer()->getParameter('code4nix_contao_csv_importer.imports')['kda_product']['columns'];
+    $imports = System::getContainer()->getParameter('code4nix_contao_csv_importer.imports');
     if (isset($imports['kda_product']['columns'])) {
         $columns = array_keys($imports['kda_product']['columns']);
     }

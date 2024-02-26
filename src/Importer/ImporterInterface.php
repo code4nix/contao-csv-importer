@@ -30,5 +30,9 @@ interface ImporterInterface
 
     public function setRecords(array $records): void;
 
+    public function getCurrentRecord(): array;
+
+    public function setCurrentRecord(array $record): void;
+
     public function getSourceFilePath($blnAbsolute = false): string;
 }

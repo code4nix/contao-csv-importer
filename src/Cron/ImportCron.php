@@ -21,7 +21,6 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Filesystem\Path;
 
 #[AsCronJob('*/30 * * * *')]
 #[AsCronJob('hourly')]
